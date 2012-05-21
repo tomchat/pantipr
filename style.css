@@ -1,0 +1,24 @@
+body {
+	font-family: Helvetica, Arial;
+	/*background-color: #D3D3D3;*/
+
+}
+
+#menus{
+	width:1000px;
+}
+#content{
+	/*background-color: #FFFFFF;
+	border-radius: 5px;
+	width:1000px;
+	height:600px;*/
+}
+.comment{
+	-webkit-border-radius: 5px;
+	background-color: #DDDDDD;
+	margin-top: 10px;
+}
+
+DIV.comment ul{
+	list-style: none;
+}

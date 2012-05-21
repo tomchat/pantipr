@@ -1,0 +1,259 @@
+﻿<!doctype html>
+<html lag="en">
+<head>
+	<meta charset="utf-8">
+	<title>Pantip Reader</title>
+	<script src="jquery.js" type="text/javascript"></script>
+	<script type="text/javascript" src="knockout-2.0.0.js"></script>
+	<link rel="stylesheet" href="style.css" type="text/css" media="screen" charset="utf-8">
+	<script type="text/javascript" charset="utf-8">
+	var CONFIG = {
+		MAIN_URL: "http://www.pantip.com",
+		ROOMS :{
+				'siam':'listerF.php',
+				'chalermthai':'listerA.php',
+				'chalermkrung':'listerC.php',
+				'jatujak':'listerJ.php',
+				'food':'listerD.php',
+				'home':'listerR.php',
+				'ratchada':'listerV.php',
+				'mbk':'listerT.php',
+				'supachalasai':'listerS.php',
+				'blueplanet':'listerE.php',
+				'camera':'listerO.php',
+				'lumpini':'listerL.php',
+				'woman':'listerQ.php',
+				'family':'listerN.php',
+				'klaibann':'listerH.php',
+				'library':'listerK.php',
+				'religious':'listerY.php',
+				'wahkor':'listerX.php',
+				'silom':'listerB.php',
+				'sinthorn':'listerI.php',
+				'rajdumnern':'listerP.php',
+				'social':'listerU.php',
+				'isolate':'listerM.php',
+				'news':'listerNE.php',
+				'all':'list_topicAll.php'
+		}
+	};
+	$(document).ready(function(){
+	
+		$('.link_topic').live('click',function(){
+			get_content(this);
+			console.log($(this).next());
+			return false;
+		});
+		
+		$('.room_topic').live('click',function(){
+			var self = $(this);
+			$('#room_name').text(self.text());
+			$('#room_menu').fadeOut();
+			$('#id_room_topic').fadeIn();
+			get_topic(this);
+			return false;
+		});
+		
+		$('#btnHome').live('click',function(){
+			$('#id_room_topic').fadeOut();
+			$('#room_menu').fadeIn();
+		});
+	
+	});
+		
+	</script>
+</head>
+<body>
+	<header></header>
+	<section>
+		
+		<div id="content" >
+			<div id='room_menu'>
+				<ul id="rooms"></ul>
+			</div>
+			<div id='id_room_topic' style='display:none;'>
+				<div id='home_menu'>
+					<button id='btnHome' >Rooms</button>
+				</div>
+				<div id='room_name'></div>
+				<div id='link_top'>
+					<ul id='topic'></ul>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+<script type="text/javascript">
+	var MAIN_URL = "http://www.pantip.com";
+	var cafe_forum = [];
+	
+	$.ajax({
+		url: MAIN_URL+"/home.php",
+		data:"",
+		type:"POST",
+		beforeSend:function(){},
+		async: false,
+		success:function(data){
+			//Get document from cefe room
+			$(data).find('.w2').each(function(){
+				var self = $(this);
+				var href_link = self.attr('href');
+				var url_index = href_link.indexOf("/cafe");
+				
+				if(url_index === 0){
+					var forum_id = href_link.replace("/cafe/","");
+						forum_id = forum_id.replace("/","");
+					
+					var forum_data = {
+						forum_id: forum_id,
+						forum_url: MAIN_URL+href_link,
+						forum_topic: self.text()
+					};
+					//console.log(forum_data.forum_id);
+					var element = '<li><a href="'+MAIN_URL+href_link+'" class="room_topic" id="'+forum_id+'" rm="'+href_link+'">'+self.text()+'</a></li>';
+					$('#rooms').append(element);
+					cafe_forum.push(forum_data);
+				}
+			});
+			
+		},
+		error:function(){
+			console.log("Server cannot connect!!");
+		}
+	});
+	
+	
+</script>
+<script type="text/javascript">
+	
+	function get_topic(e){
+		var self = $(e);
+		var URL = self.attr('href')+CONFIG.ROOMS[self.attr('id')];
+		var MAIN_URL = "http://www.pantip.com";
+		var rm = self.attr('rm');
+		$.ajax({
+			url: URL,
+			data:"",
+			type:"POST",
+			beforeSend:function(){},
+			success:function(res){
+				$('#topic').html("");
+				var result = $(res).find(".themebgcenter").find('a').each(function(){
+					var self = $(this);
+					var pantip_url = self.attr('href');
+					var url_index = pantip_url.indexOf(rm);
+					var topic = self.text();
+					//console.log(pantip_url);
+					if(url_index === 0){
+						var url_link = MAIN_URL+pantip_url;
+						var link_blog = '<li><ul><a href="'+url_link+'" class="link_topic" >'+self.text()+'</a></ul></li>';
+						
+						$('#topic').append(link_blog);
+					}
+				});
+				
+				
+			},
+			error:function(){
+				console.log("Server cannot connect!!");
+			}
+		});
+	}
+	
+	function get_content(e){
+		var self_content = $(e);
+		var URL = self_content.attr('href');
+		var content_obj = [];
+		var comment_obj = [];
+		var linkComtent_obj = [];
+		$.ajax({
+			url: URL,
+			data:"",
+			type: "GET",
+			beforeSend: function(){
+
+			},
+			success: function(res){
+
+				self_content.nextAll().html('');
+				
+				var main_content 	= $(res).find('table:eq(3) table:eq(2)');
+				var post_topic 		= main_content.find('table:eq(0) big:eq(1)').html();
+				var post_content 	= main_content.find('p:eq(0)');
+				//var post_date 		= main_content.find('p:eq(1) i').html();
+				var post_user 		= main_content.find('table:eq(1) tr:eq(0) td:eq(1) font').text();
+				var post_date 		= main_content.find('table:eq(1) tr:eq(1) td:eq(1) font').text();
+				var img_file = main_content.find('center img').attr('src');
+				var video_file = main_content.find('object').html();
+				if(!video_file){video_file = ''};
+
+				var sp = URL.split("/");
+					sp[sp.length-1] = img_file;
+					img_file = sp.join("/");
+				var data = {
+					'topic': post_topic,
+					'content': post_content,
+					'date_post': post_date,
+					'user_post': post_user
+				};
+				content_obj.push(data);
+				//var new_sub = '<div><ul><li>'+post_topic+'</li></ul>';
+				//remove font color
+				post_content.find('font').attr('color','');
+
+				var	new_sub = '<div ><ul><li>'+post_content.html()+'<img src="'+img_file+'">'+video_file+'</li></ul>';
+					new_sub += '<ul><li>'+post_date+'</li></ul>';
+					new_sub += '<ul><li>'+post_user+'</li></ul></div>';
+
+				linkComtent_obj.push(new_sub);
+
+				var comment_content = $(res).find('ul:eq(0) ul:eq(0)');
+				comment_content.find('a').each(function(){
+					var self = $(this);
+					var focus_comment;
+					var comment_topic;
+					var comment_img;
+					var comment_user;
+					var url_sp = URL.split("/");
+					if(self.attr('name')){
+						focus_comment = self.find('table:eq(0) table:eq(0) table:eq(0) td:eq(1)');
+						comment_topic = focus_comment.find('p:eq(0)');
+						comment_img = focus_comment.find('center table:eq(0) table:eq(0) img').attr('src');
+						comment_user = $.trim(focus_comment.find('table:eq(1) tr:eq(0) td:eq(1)').text());
+						if(comment_img){
+							url_sp[url_sp.length-1] = comment_img
+							comment_img = url_sp.join("/");
+						}else{ comment_img = ""; }
+
+						var video_file = focus_comment.find('object').html();
+						if(!video_file){video_file = ''};
+						//console.log(video_file);
+						 var comment_data = {
+						 	'topic':comment_topic,
+						 	'img': comment_img,
+						 	'user':comment_user
+						 };
+						 var new_comment = '<div class="comment">';
+						 //remove font color
+						 comment_topic.find('font').attr('color','');
+
+						new_comment += '<ul><li >'+comment_topic.html()+'<img src="'+comment_img+'">'+video_file+'</li></ul>';
+						new_comment += '<ul><li>'+comment_user+'</li></ul>';
+						new_comment += '</div>';
+						
+						linkComtent_obj.push(new_comment);
+						//console.log(comment_topic.html());
+						comment_obj.push(comment_data);
+					}
+					
+				});
+				
+				self_content.parent().append(linkComtent_obj.join(''));
+			},
+			error: function(){
+				console.log("Server cannot connect!!");
+			}
+		});
+	}
+</script>
+</html>

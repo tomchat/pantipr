@@ -1,0 +1,16 @@
+{
+  "name": "Pantip Reader",
+  "version": "0.1",
+  "description": "Reader from www.pantip.com",
+  "app": {
+    "launch": {
+      "local_path": "index.html"
+    }
+  },
+  "icon":{
+    "1": "icon.png"
+  },
+  "permissions": [
+    "http://www.pantip.com/*"
+  ]
+}
