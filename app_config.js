@@ -1,0 +1,30 @@
+var CONFIG = {
+    MAIN_URL: "http://www.pantip.com",
+    ROOMS :{
+            'siam':'listerF.php',
+            'chalermthai':'listerA.php',
+            'chalermkrung':'listerC.php',
+            'jatujak':'listerJ.php',
+            'food':'listerD.php',
+            'home':'listerR.php',
+            'ratchada':'listerV.php',
+            'mbk':'listerT.php',
+            'supachalasai':'listerS.php',
+            'blueplanet':'listerE.php',
+            'camera':'listerO.php',
+            'lumpini':'listerL.php',
+            'woman':'listerQ.php',
+            'family':'listerN.php',
+            'klaibann':'listerH.php',
+            'library':'listerK.php',
+            'religious':'listerY.php',
+            'wahkor':'listerX.php',
+            'silom':'listerB.php',
+            'sinthorn':'listerI.php',
+            'rajdumnern':'listerP.php',
+            'social':'listerU.php',
+            'isolate':'listerM.php',
+            'news':'listerNE.php',
+            'all':'list_topicAll.php'
+    }
+};
